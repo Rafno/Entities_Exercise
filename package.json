@@ -1,0 +1,22 @@
+{
+  "name": "entities",
+  "version": "1.0.0",
+  "description": "Assignment",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "rafnar",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rafno/Entities_Exercise.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rafno/Entities_Exercise/issues"
+  },
+  "homepage": "https://github.com/Rafno/Entities_Exercise#readme"
+}

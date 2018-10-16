@@ -24,20 +24,23 @@ function Bullet(descr) {
 // (You might want these to assist with early testing,
 //  even though they are unnecessary in the "real" code.)
 //
+/*
 Bullet.prototype.rotation = 0;
 Bullet.prototype.cx = 200;
 Bullet.prototype.cy = 200;
 Bullet.prototype.velX = 1;
 Bullet.prototype.velY = 1;
-
+*/
 // Convert times from seconds to "nominal" time units.
 Bullet.prototype.lifeSpan = 3 * SECS_TO_NOMINALS;
-
+Bullet.prototype.globalAlpha = 1;
 Bullet.prototype.update = function (du) {
-    
-    // TODO: Implement this
+    Bullet.prototype.lifeSpan -= du;
+    this.cx += this.velX * du;
+    this.cy += this.velY * du;
 
-    // NB: Remember to handle screen-wrapping... and "death"
+    this.rotation = util.wrapRange(this.rotation,
+				   0, consts.FULL_CIRCLE);
 };
 
 Bullet.prototype.setPos = function (cx, cy) {
@@ -61,15 +64,19 @@ Bullet.prototype.render = function (ctx) {
 
     // NB: You can make things fade by setting `ctx.globalAlpha` to
     // a value between 0 (totally transparent) and 1 (totally opaque).
-
-    var fadeThresh = Bullet.prototype.lifeSpan / 3;
-
+    let fadeThresh = Bullet.prototype.lifeSpan / 3;
+    Bullet.prototype.globalAlpha = fadeThresh / 60;
+    ctx.globalAlpha = Bullet.prototype.globalAlpha;
+        g_sprites.bullet.drawWrappedCentredAt(
+            ctx, this.cx, this.cy, this.rotation
+            );
+    console.log(fadeThresh);
+    if(fadeThresh <= 0.3){
+        entityManager._bullets.pop();
+    }
     // ..YOUR STUFF..
 
-    g_sprites.bullet.drawWrappedCentredAt(
-	ctx, this.cx, this.cy, this.rotation
-    );
-
+    ctx.globalAlpha = 1;
     // ..YOUR STUFF..
 
 };
