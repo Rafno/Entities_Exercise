@@ -33,9 +33,11 @@ Bullet.prototype.velY = 1;
 */
 // Convert times from seconds to "nominal" time units.
 Bullet.prototype.lifeSpan = 3 * SECS_TO_NOMINALS;
-Bullet.prototype.globalAlpha = 1;
 Bullet.prototype.update = function (du) {
-    Bullet.prototype.lifeSpan -= du;
+    this.lifeSpan -= du;
+    if(this.lifeSpan < 0){
+        entityManager._bullets.shift();
+    }
     this.cx += this.velX * du;
     this.cy += this.velY * du;
 
@@ -59,24 +61,14 @@ Bullet.prototype.wrapPosition = function () {
 
 Bullet.prototype.render = function (ctx) {
 
-    // TODO: Modify this to implement a smooth "fade-out" during
-    // the last third of the bullet's total "lifeSpan"
-
-    // NB: You can make things fade by setting `ctx.globalAlpha` to
-    // a value between 0 (totally transparent) and 1 (totally opaque).
     let fadeThresh = Bullet.prototype.lifeSpan / 3;
-    Bullet.prototype.globalAlpha = fadeThresh / 60;
-    ctx.globalAlpha = Bullet.prototype.globalAlpha;
-        g_sprites.bullet.drawWrappedCentredAt(
-            ctx, this.cx, this.cy, this.rotation
-            );
-    console.log(fadeThresh);
-    if(fadeThresh <= 0.3){
-        entityManager._bullets.pop();
+    
+    if(this.lifeSpan < fadeThresh){
+        ctx.globalAlpha = this.lifeSpan/fadeThresh;
     }
-    // ..YOUR STUFF..
-
+    g_sprites.bullet.drawWrappedCentredAt(
+        ctx, this.cx, this.cy, this.rotation
+        );
     ctx.globalAlpha = 1;
-    // ..YOUR STUFF..
 
 };

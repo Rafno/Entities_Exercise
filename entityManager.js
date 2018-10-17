@@ -45,7 +45,27 @@ var entityManager = {
     },
 
     _findNearestShip: function (posX, posY) {
-
+        let dist = 0;
+        let wrappedDist = 0;
+        let final;
+        //  OVERKILL
+        let maxDistance = Number.MAX_SAFE_INTEGER;
+        let closestShip,
+            closestIndex;
+        this._ships.forEach(ship => {
+            wrappedDist = util.wrappedDistSq(posX,posY,ship.cx,ship.cy);
+            dist = util.distSq(posX,posY,ship.cx,ship.cy);
+            if(wrappedDist > dist){
+                final = dist;
+            } else{
+                final = wrappedDist;
+            }
+            if(final <= maxDistance){
+                maxDistance = final;
+                closestShip = ship;
+                closestIndex = closestShip.indexOf;
+            }
+        });
         // TODO: Implement this
 
         // NB: Use this technique to let you return "multiple values"
@@ -81,34 +101,38 @@ var entityManager = {
         this._generateRocks();
 
         // I could have made some ships here too, but decided not to.
-        this._generateShip();
     },
 
     fireBullet: function (cx, cy, velX, velY, rotation) {
         let singleShot = new Bullet({
-            cx: cx,
-            cy: cy,
-            velX: velX,
-            velY: velY,
+            cx : cx,
+            cy : cy,
+            velX : velX,
+            velY : velY,
             rotation: rotation
         });
         this._bullets.push(singleShot);
     },
 
     generateShip: function (descr) {
-        let g_ship = new Ship();
+        let g_ship = new Ship({
+            cx : descr.cx,
+            cy : descr.cy
+        });
         this._ships.push(g_ship);
     },
 
     killNearestShip: function (xPos, yPos) {
         // TODO: Implement this
-
+        let nearestShip = this._findNearestShip(xPos,yPos);
+        this._ships.splice(nearestShip.theIndex,1);
         // NB: Don't forget the "edge cases"
     },
 
     yoinkNearestShip: function (xPos, yPos) {
         // TODO: Implement this
-
+        let nearestShip = this._findNearestShip(xPos,yPos);
+        nearestShip.theShip.setPos(xPos,yPos);
         // NB: Don't forget the "edge cases"
     },
 
@@ -126,7 +150,7 @@ var entityManager = {
 
     update: function (du) {
         this._rocks.forEach(rock => rock.update(du));
-        this._ships[0].update(du);
+        this._ships.forEach(ship => ship.update(du));
         this._bullets.forEach(bullet => bullet.update(du));
         // TODO: Implement this
 
@@ -135,7 +159,7 @@ var entityManager = {
     },
 
     render: function (ctx) {
-        this._ships[0].render(ctx);
+        this._ships.forEach(ship => ship.render(ctx));
         this._bullets.forEach(bullet => bullet.render(ctx));
         // TODO: Implement this
 
