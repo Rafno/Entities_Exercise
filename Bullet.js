@@ -24,23 +24,26 @@ function Bullet(descr) {
 // (You might want these to assist with early testing,
 //  even though they are unnecessary in the "real" code.)
 //
-/*
-Bullet.prototype.rotation = 0;
-Bullet.prototype.cx = 200;
-Bullet.prototype.cy = 200;
-Bullet.prototype.velX = 1;
-Bullet.prototype.velY = 1;
-*/
+
 // Convert times from seconds to "nominal" time units.
 Bullet.prototype.lifeSpan = 3 * SECS_TO_NOMINALS;
+/**
+ * Update handles the lifetime of the bullet, shifting it out of the array
+ * once the lifetime is up.
+ * Update honestly copy/pasted from Rock.js as they almost basically do
+ * the same thing.
+ * @param {*} du 
+ */
 Bullet.prototype.update = function (du) {
     this.lifeSpan -= du;
+    // No need to use KILL_ME_NOW, just shift the bullet out of the array.
     if(this.lifeSpan < 0){
         entityManager._bullets.shift();
     }
     this.cx += this.velX * du;
     this.cy += this.velY * du;
-
+    // YOU SPIN ME RIGHT'ROUND BABY RIGHT ROUND.
+    this.rotation = util.randRange(0,1) * du;
     this.rotation = util.wrapRange(this.rotation,
 				   0, consts.FULL_CIRCLE);
 };
@@ -58,7 +61,11 @@ Bullet.prototype.wrapPosition = function () {
     this.cx = util.wrapRange(this.cx, 0, g_canvas.width);
     this.cy = util.wrapRange(this.cy, 0, g_canvas.height);
 };
-
+/**
+ * Gradually fades the ctx.globalAlpha value
+ * Until the bullet has expired, then bring it up again.
+ * @param {*} ctx 
+ */
 Bullet.prototype.render = function (ctx) {
 
     let fadeThresh = Bullet.prototype.lifeSpan / 3;

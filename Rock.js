@@ -19,13 +19,13 @@ function Rock() {
     //     `g_canvas`, and its properties, are available to you here.
 
     // Rock randomisation
-    this.cx = util.randRange(0,400); 
-    this.cy = util.randRange(0,400); 
-    this.rotation = 0;                 
+    this.cx = util.randRange(0, 400);
+    this.cy = util.randRange(0, 400);
+    this.rotation = 0;
 
     var MIN_SPEED = 20,
         MAX_SPEED = 70,
-        MINMAXSPEED = util.randRange(MIN_SPEED,MAX_SPEED);
+        MINMAXSPEED = util.randRange(MIN_SPEED, MAX_SPEED);
 
     // Set the velocity so that the rock has a random direction,
     // and a speed between the MIN and MAX as defined above.
@@ -39,22 +39,26 @@ function Rock() {
     //
     // Some helper vars (e.g. `speed` and `dirn` might be good to have)
     //
-    this.velX = MINMAXSPEED / SECS_TO_NOMINALS; 
-    this.velY = MINMAXSPEED / SECS_TO_NOMINALS; 
 
+    //Multiplied between -1 and 1 to make some go the other direction
+    // Because its 'fancy'
+    this.velX = util.randRange(-1, 1) * (MINMAXSPEED / SECS_TO_NOMINALS);
+    this.velY = util.randRange(-1, 1) * (MINMAXSPEED / SECS_TO_NOMINALS);
 
+    // variable created to make it shorter/prettier
     var MIN_ROT_SPEED = 0.5,
         MAX_ROT_SPEED = 2.5,
-        rotSpeed = util.randRange(MIN_ROT_SPEED,MAX_ROT_SPEED) / SECS_TO_NOMINALS;
+        rotSpeed = util.randRange(MIN_ROT_SPEED, MAX_ROT_SPEED) / SECS_TO_NOMINALS;
     // Set the rotational velocity between the MIN and MAX above.
     // (Again, these are expressed in pixels per second).
+    
     // Multiplied from the range of -1 to 1 to rotate in seperate directions.
-    this.velRot = util.randRange(-1,1) * rotSpeed;
+    this.velRot = util.randRange(-1, 1) * rotSpeed;
 
 }
 
 Rock.prototype.update = function (du) {
-    
+
     // I DID THIS BIT FOR YOU. NICE, AREN'T I?
 
     this.cx += this.velX * du;
@@ -62,7 +66,7 @@ Rock.prototype.update = function (du) {
 
     this.rotation += this.velRot * du;
     this.rotation = util.wrapRange(this.rotation,
-				   0, consts.FULL_CIRCLE);
+        0, consts.FULL_CIRCLE);
 
     this.wrapPosition();
 };
@@ -73,7 +77,7 @@ Rock.prototype.setPos = function (cx, cy) {
 }
 
 Rock.prototype.getPos = function () {
-    return {posX : this.cx, posY : this.cy};
+    return { posX: this.cx, posY: this.cy };
 }
 
 Rock.prototype.wrapPosition = function () {
@@ -84,7 +88,7 @@ Rock.prototype.wrapPosition = function () {
 Rock.prototype.render = function (ctx) {
 
     g_sprites.rock.drawWrappedCentredAt(
-	ctx, this.cx, this.cy, this.rotation
+        ctx, this.cx, this.cy, this.rotation
     );
 
 };
